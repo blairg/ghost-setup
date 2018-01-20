@@ -1,0 +1,15 @@
+version: '3'
+services:
+  nginx:
+    build: .
+    ports:
+      - "81:80"
+    links:
+      - hackerlite_81:hackerlite_81
+  hackerlite_81:
+    image: ghost
+    restart: always
+    volumes:
+      - /home/project-overview-mono/testblog:/var/lib/ghost
+    expose:
+      - "2368"
