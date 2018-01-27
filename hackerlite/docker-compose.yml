@@ -12,7 +12,7 @@ services:
     restart: always
     volumes:
       - /home/project-overview-mono/hackerlite/v1upgradedata:/var/lib/ghost/content
-      - /home/project-overview-mono/hackerlite/v1upgradethemedata/themes/casper:/var/lib/ghost/versions/1.20.2/content/themes/casper
+      - /home/project-overview-mono/hackerlite/themes/casper/post.hbs:/var/lib/ghost/versions/1.20.2/content/themes/casper/post.hbs
       - /home/project-overview-mono/hackerlite/v1upgradesettings/config.production.json:/var/lib/ghost/config.production.json
       - /home/project-overview-mono/hackerlite/v1upgradesettings/config.development.json:/var/lib/ghost/config.development.json
     expose:
