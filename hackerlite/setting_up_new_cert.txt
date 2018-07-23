@@ -2,10 +2,21 @@ cd /home/project-overview-mono/hackerlite/
 docker-compose down
 sudo systemctl start nginx
 sudo certbot certonly -a webroot --webroot-path=/usr/share/nginx/html -d hackerlite.xyz -d www.hackerlite.xyz
-MIGHT BE 0002...
-Path -> /etc/letsencrypt/live/hackerlite.xyz-0001/
-/bin/cp -rf ../../archive/hackerlite.xyz-0001/* /home/project-overview-mono/hackerlite/sslcerts
-MIGHT NEED TO CHANGE FILE NUMBER
+
+
+    MIGHT BE 0004...
+    Path -> /etc/letsencrypt/live/hackerlite.xyz-0001/
+    /bin/cp -rf ../../archive/hackerlite.xyz-0001/* /home/project-overview-mono/hackerlite/sslcerts
+
+    /bin/cp -rf /etc/letsencrypt/live/hackerlite.xyz-0001/* /home/project-overview-mono/hackerlite/sslcerts
+
+    /bin/cp /etc/letsencrypt/live/hackerlite.xyz-0001/fullchain.pem /home/project-overview-mono/hackerlite/sslcerts/fullchain.pem
+    /bin/cp /etc/letsencrypt/live/hackerlite.xyz-0001/privkey.pem /home/project-overview-mono/hackerlite/sslcerts/privkey.pem
+
+
+# Copy contents of `fullchain.pem` and `privkey.pem` into `/home/project-overview-mono/hackerlite/sslcerts` as new files
+
+# MIGHT NEED TO CHANGE FILE NUMBER
 sudo systemctl stop nginx
 docker-compose build --no-cache
 docker-compose up
