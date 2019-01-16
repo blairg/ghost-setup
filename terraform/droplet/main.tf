@@ -50,7 +50,6 @@ resource "digitalocean_droplet" "hackerlite-droplet" {
       "sudo add-apt-repository -y ppa:certbot/certbot",
       "sudo apt-get update",
       "sudo apt-get install -y python-certbot-nginx"
-  #     "sudo certbot certonly -a webroot --webroot-path=/var/www/letsencrypt --register-unsafely-without-email --agree-tos -d hackerlite.xyz -d www.hackerlite.xyz"
      ]
   }
 
@@ -61,7 +60,16 @@ resource "digitalocean_droplet" "hackerlite-droplet" {
   }
 
   # Clone my Repo from Github
-
+  provisioner "remote-exec" {
+    inline = [
+      "cd /home", 
+      "git clone git@github.com:blairg/ghost-setup.git",
+      "cd ghost-setup",
+      "git checkout hackerlite-blog",
+      "cp -r /home/ghost-setup/hackerlite /home/hackerlite"
+    ]
+  }
+  
   # Unpack Google cloud backup for ghost data
 
   # Restart NGINX
