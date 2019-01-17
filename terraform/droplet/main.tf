@@ -59,6 +59,13 @@ resource "digitalocean_droplet" "hackerlite-droplet" {
     destination = "/etc/nginx/sites-available/default" // copy to different location then overwrite
   }
 
+  # Restart NGINX
+  provisioner "remote-exec" {
+    inline = [
+      "sudo systemctl restart nginx"
+    ]
+  }
+
   # Clone my Repo from Github
   provisioner "remote-exec" {
     inline = [
@@ -69,10 +76,25 @@ resource "digitalocean_droplet" "hackerlite-droplet" {
       "cp -r /home/ghost-setup/hackerlite /home/hackerlite"
     ]
   }
-  
-  # Unpack Google cloud backup for ghost data
 
-  # Restart NGINX
+  # Create Let's Encrypt Certificate
+  provisioner "remote-exec" {
+    inline = [
+      "cd hackerlite/hackerlite",
+      "sudo certbot --nginx --webroot-path=/home/hackerlite/hackerlite/sslcerts -d hackerlite.xyz -d www.hackerlite.xyz", 
+      "sudo systemctl stop nginx"
+    ]
+  }
+
+  # # Unpack Google cloud backup for ghost data
+  # provisioner "remote-exec" {
+  #   inline = [
+  #     "export CLOUD_SDK_REPO=\"cloud-sdk-$(lsb_release -c -s)\"",
+  #     "echo \"deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main\" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list",
+  #     "curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -", 
+  #     "sudo apt-get update && sudo apt-get install -y google-cloud-sdk"
+  #   ]
+  # }
 }
 
 resource "digitalocean_floating_ip_assignment" "hackerlite-droplet" {
