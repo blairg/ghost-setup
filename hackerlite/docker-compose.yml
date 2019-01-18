@@ -11,13 +11,13 @@ services:
     image: ghost:1.20.2-alpine
     restart: always
     volumes:
-      - /home/hackerlite/hackerlite/data:/var/lib/ghost/content
-      - /home/hackerlite/hackerlite/themes/casper/default.hbs:/var/lib/ghost/versions/1.20.2/content/themes/casper/default.hbs
-      - /home/hackerlite/hackerlite/themes/casper/post.hbs:/var/lib/ghost/versions/1.20.2/content/themes/casper/post.hbs
-      - /home/hackerlite/hackerlite/themes/casper/amp.hbs:/var/lib/ghost/versions/1.20.2/content/themes/casper/amp.hbs
-      - /home/hackerlite/hackerlite/themes/sw-toolbox.js:/var/lib/ghost/versions/1.20.2/content/themes/casper/assets/dist/sw-toolbox.js
-      - /home/hackerlite/hackerlite/themes/serviceworker-v1.js:/var/lib/ghost/versions/1.20.2/content/themes/casper/serviceworker-v1.js
-      - /home/hackerlite/hackerlite/settings/config.production.json:/var/lib/ghost/config.production.json
-      - /home/hackerlite/hackerlite/settings/config.development.json:/var/lib/ghost/config.development.json
+      - /home/hackerlite/data:/var/lib/ghost/content
+      - /home/hackerlite/themes/casper/default.hbs:/var/lib/ghost/versions/1.20.2/content/themes/casper/default.hbs
+      - /home/hackerlite/themes/casper/post.hbs:/var/lib/ghost/versions/1.20.2/content/themes/casper/post.hbs
+      - /home/hackerlite/themes/casper/amp.hbs:/var/lib/ghost/versions/1.20.2/content/themes/casper/amp.hbs
+      - /home/hackerlite/themes/sw-toolbox.js:/var/lib/ghost/versions/1.20.2/content/themes/casper/assets/dist/sw-toolbox.js
+      - /home/hackerlite/themes/serviceworker-v1.js:/var/lib/ghost/versions/1.20.2/content/themes/casper/serviceworker-v1.js
+      - /home/hackerlite/settings/config.production.json:/var/lib/ghost/config.production.json
+      - /home/hackerlite/settings/config.development.json:/var/lib/ghost/config.development.json
     expose:
       - "2368"
