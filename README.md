@@ -1,27 +1,32 @@
 # Digital Ocean VM
 
-## Backup Ghost Data
+<!-- ## Backup Ghost Data
 
 * ssh onto machine
 * navigate to the directory cd /home/hackerlite
 * zip -r hackerlite.zip ./
 * scp -rp <USER>@<IP_ADDRESS>:/home/hackerlite/hackerlite.zip ./Downloads
-* Upload manually to a Google bucket
+* Upload manually to a Google bucket -->
 
-## Migration New VMls
-
+## Migration New VMs
  
-* 
-* scp -rp ./Downloads/hackerlite.zip <USER>@<IP_ADDRESS>:/home/hackerlite
-* unzip hackerlite.zip -d hackerlite
-* cd hackerlite/hackerlite
-* sudo certbot --nginx --webroot-path=/home/hackerlite/hackerlite/sslcerts -d hackerlite.xyz -d www.hackerlite.xyz
-* sudo systemctl stop nginx 
-* docker-compose up -d
+<!-- * docker run -ti -e CLOUDSDK_CONFIG=/config/mygcloud -v `pwd`/mygcloud:/config/mygcloud -v `pwd`:/certs google/cloud-sdk:latest /bin/bash
+* * gcloud init  --console-only
+* * gsutil cp gs://hackerlite/hackerlite.zip /config/mygcloud
+* * exit
+* unzip $PWD/mygcloud/hackerlite.zip -d /home/hackerlite  -->
+
+
+* DROPLET_IP=$(terraform output droplet_ip_address)
+* sh ./applycerts.sh
+
+<!-- sudo certbot --nginx --webroot-path=/home/hackerlite/sslcerts -d hackerlite.xyz -d www.hackerlite.xyz && cd /home/hackerlite && cp /etc/letsencrypt/live/hackerlite.xyz/fullchain.pem sslcerts/ && cp /etc/letsencrypt/live/hackerlite.xyz/privkey.pem sslcerts/ && sudo openssl dhparam -out /home/hackerlite/sslcerts/dhparam.pem 2048 && sudo systemctl stop nginx && docker-compose up -d -->
 
 
 
-## Plan 
+## Terraform Deployment
+
+### Plan
 
 cd terraform
 
@@ -33,11 +38,11 @@ terraform plan -out=tfplan -input=false \
   -var "digitalocean_floating_ip=$FLOATING_IP"
 
 
-## Create
+### Create
 
 terraform apply tfplan
 
-## Destroy
+### Destroy
 
 terraform destroy \
   -var "do_token=${DO_PAT}" \

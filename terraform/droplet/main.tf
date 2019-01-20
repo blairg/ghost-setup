@@ -35,7 +35,7 @@ resource "digitalocean_droplet" "hackerlite-droplet" {
     # Install NGINX
       "sudo apt install -y nginx unzip zip",
       "sudo ufw allow 'Nginx Full'",
-      "sudo ufw enable",
+      "sudo ufw enable -y",
     # install Docker
       "snap install docker",
       "sudo curl -L \"https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)\" -o /usr/local/bin/docker-compose",
@@ -62,7 +62,7 @@ resource "digitalocean_droplet" "hackerlite-droplet" {
   # Restart NGINX
   provisioner "remote-exec" {
     inline = [
-      "sudo systemctl restart nginx"
+      "sudo /etc/init.d/nginx restart"
     ]
   }
 
@@ -70,31 +70,53 @@ resource "digitalocean_droplet" "hackerlite-droplet" {
   provisioner "remote-exec" {
     inline = [
       "cd /home", 
-      "git clone git@github.com:blairg/ghost-setup.git",
+      "git clone https://github.com/blairg/ghost-setup.git",
       "cd ghost-setup",
       "git checkout hackerlite-blog",
       "cp -r /home/ghost-setup/hackerlite /home/hackerlite"
     ]
   }
 
-  # Create Let's Encrypt Certificate
+  # Gcloud Auth File
+  provisioner "file" {
+    source      = "gcsauth.json"
+    destination = "/home/gcsauth.json" 
+  }
+
+  # Install Google Cloud SDK and rsync blog data
   provisioner "remote-exec" {
     inline = [
-      "cd hackerlite/hackerlite",
-      "sudo certbot --nginx --webroot-path=/home/hackerlite/hackerlite/sslcerts -d hackerlite.xyz -d www.hackerlite.xyz", 
-      "sudo systemctl stop nginx"
+      "cd /home",
+      "mkdir mygcloud",
+      "export CLOUD_SDK_REPO=\"cloud-sdk-$(lsb_release -c -s)\"",
+      "echo \"deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main\" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list",
+      "curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -",
+      "sudo apt-get update && sudo apt-get install -y google-cloud-sdk",
+      "gcloud auth activate-service-account --key-file gcsauth.json",
+      "mkdir -p /home/hackerlite/data",
+      "mkdir -p /home/hackerlite/settings",
+      "mkdir -p /home/hackerlite/themes",
+      "gsutil -m rsync -e -r /home/hackerlite/data gs://hackerlite/v2/data",
+      "gsutil -m rsync -e -r /home/hackerlite/settings gs://hackerlite/v2/settings",
+      "gsutil -m rsync -e -r /home/hackerlite/themes gs://hackerlite/v2/themes"
     ]
   }
 
-  # # Unpack Google cloud backup for ghost data
-  # provisioner "remote-exec" {
-  #   inline = [
-  #     "export CLOUD_SDK_REPO=\"cloud-sdk-$(lsb_release -c -s)\"",
-  #     "echo \"deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main\" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list",
-  #     "curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -", 
-  #     "sudo apt-get update && sudo apt-get install -y google-cloud-sdk"
-  #   ]
-  # }
+  # Cronjob to hourly rsync the blog data
+  provisioner "remote-exec" {
+    inline = [
+      "cd /home",
+      "gsutil cp gs://hackerlite/cronjobs.txt cronjobs.txt",
+      "(crontab -l ; cat cronjobs.txt 2>&1) | grep -v \"no crontab\" | sort | uniq | crontab -"
+    ]
+  }
+
+  # Create SSL certificate folder
+  provisioner "remote-exec" {
+    inline = [
+      "mkdir -p /home/hackerlite/hackerlite/sslcerts"
+    ]
+  }
 }
 
 resource "digitalocean_floating_ip_assignment" "hackerlite-droplet" {

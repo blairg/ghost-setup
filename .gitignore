@@ -4,3 +4,5 @@ backup/
 gcsauth.json
 tfplan
 .terraform
+hackerlite/data/
+hackerlite/settings/
