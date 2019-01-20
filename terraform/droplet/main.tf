@@ -96,9 +96,9 @@ resource "digitalocean_droplet" "hackerlite-droplet" {
       "mkdir -p /home/hackerlite/data",
       "mkdir -p /home/hackerlite/settings",
       "mkdir -p /home/hackerlite/themes",
-      "gsutil -m rsync -e -r /home/hackerlite/data gs://hackerlite/v2/data",
-      "gsutil -m rsync -e -r /home/hackerlite/settings gs://hackerlite/v2/settings",
-      "gsutil -m rsync -e -r /home/hackerlite/themes gs://hackerlite/v2/themes"
+      "gsutil -m cp -r gs://hackerlite/v2/data/ /home/hackerlite/data/",
+      "gsutil -m cp -r gs://hackerlite/v2/settings/ /home/hackerlite/settings/",
+      "gsutil -m cp -r gs://hackerlite/v2/themes/ /home/hackerlite/themes/"
     ]
   }
 
