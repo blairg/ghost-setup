@@ -114,7 +114,7 @@ resource "digitalocean_droplet" "hackerlite-droplet" {
   # Create SSL certificate folder
   provisioner "remote-exec" {
     inline = [
-      "mkdir -p /home/hackerlite/hackerlite/sslcerts"
+      "mkdir -p /home/hackerlite/sslcerts"
     ]
   }
 }
