@@ -94,11 +94,13 @@ resource "digitalocean_droplet" "hackerlite-droplet" {
       "sudo apt-get update && sudo apt-get install -y google-cloud-sdk",
       "gcloud auth activate-service-account --key-file gcsauth.json",
       "mkdir -p /home/hackerlite/data",
-      "mkdir -p /home/hackerlite/settings",
-      "mkdir -p /home/hackerlite/themes",
-      "gsutil -m cp -r gs://hackerlite/v2/data/ /home/hackerlite/data/",
-      "gsutil -m cp -r gs://hackerlite/v2/settings/ /home/hackerlite/settings/",
-      "gsutil -m cp -r gs://hackerlite/v2/themes/ /home/hackerlite/themes/"
+      "mkdir -p /home/hackerlite/sslcerts",
+      "gsutil -m cp -r gs://hackerlite/v2/data /home/hackerlite/",
+      "gsutil -m cp -r gs://hackerlite/v2/sslcerts /home/hackerlite/",
+      "sudo openssl dhparam -out /home/hackerlite/sslcerts/dhparam.pem 2048",
+      "sudo systemctl stop nginx",
+      "cd /home/hackerlite",
+      "docker-compose up -d"
     ]
   }
 
@@ -111,12 +113,13 @@ resource "digitalocean_droplet" "hackerlite-droplet" {
     ]
   }
 
-  # Create SSL certificate folder
-  provisioner "remote-exec" {
-    inline = [
-      "mkdir -p /home/hackerlite/sslcerts"
-    ]
-  }
+  # # Create SSL certificate folder
+  # provisioner "remote-exec" {
+  #   inline = [
+  #     "mkdir -p /home/hackerlite/sslcerts"
+  #   ]
+  # }
+
 }
 
 resource "digitalocean_floating_ip_assignment" "hackerlite-droplet" {
