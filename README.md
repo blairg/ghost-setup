@@ -14,6 +14,12 @@
 
 ## Terraform Deployment
 
+### Set Env Vars
+
+DO_PAT=<VALUE>
+SSH_FINGERPRINT=<VALUE>
+FLOATING_IP=<VALUE>
+
 ### Plan
 
 cd terraform
