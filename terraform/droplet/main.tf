@@ -27,7 +27,7 @@ resource "digitalocean_droplet" "hackerlite-droplet" {
     ]
   }
 
-	# Install Docker and download and run Hackerlite blog
+	# Install NGINX, Docker and Certbot
   provisioner "remote-exec" {
     inline = [
       "export PATH=$PATH:/usr/bin",
@@ -43,7 +43,6 @@ resource "digitalocean_droplet" "hackerlite-droplet" {
       "sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose",
       "docker-compose version",
     # Install Certbot - Let's Encrypt
-      "sudo mkdir -p /var/www/letsencrypt",
       "sudo apt-get update",
       "sudo apt-get install -y -q software-properties-common",
       "sudo add-apt-repository -y universe",
@@ -83,7 +82,7 @@ resource "digitalocean_droplet" "hackerlite-droplet" {
     destination = "/home/gcsauth.json" 
   }
 
-  # Install Google Cloud SDK and rsync blog data
+  # Install Google Cloud SDK and copying blog data from GCS
   provisioner "remote-exec" {
     inline = [
       "cd /home",
@@ -97,6 +96,7 @@ resource "digitalocean_droplet" "hackerlite-droplet" {
       "mkdir -p /home/hackerlite/sslcerts",
       "gsutil -m cp -r gs://hackerlite/v2/data /home/hackerlite/",
       "gsutil -m cp -r gs://hackerlite/v2/sslcerts /home/hackerlite/",
+      "gsutil -m cp -r gs://hackerlite/v2/data/images /home/hackerlite/data/images/",
       "sudo openssl dhparam -out /home/hackerlite/sslcerts/dhparam.pem 2048",
       "sudo systemctl stop nginx",
       "cd /home/hackerlite",
@@ -112,14 +112,6 @@ resource "digitalocean_droplet" "hackerlite-droplet" {
       "(crontab -l ; cat cronjobs.txt 2>&1) | grep -v \"no crontab\" | sort | uniq | crontab -"
     ]
   }
-
-  # # Create SSL certificate folder
-  # provisioner "remote-exec" {
-  #   inline = [
-  #     "mkdir -p /home/hackerlite/sslcerts"
-  #   ]
-  # }
-
 }
 
 resource "digitalocean_floating_ip_assignment" "hackerlite-droplet" {
