@@ -11,7 +11,8 @@ COPY sslcerts/dhparam.pem /etc/ssl/certs/dhparam.pem
 RUN mkdir -p /etc/letsencrypt/live/hackerlite.xyz && \
     mkdir -p /home/www-data/hackerlite.xyz/static/js && \
     mkdir -p /home/www-data/hackerlite.xyz/static/images && \
-    mkdir -p /home/www-data/hackerlite.xyz/static/html
+    mkdir -p /home/www-data/hackerlite.xyz/static/html && \
+    mkdir -p /home/www-data/hackerlite.xyz/static/text
 
 # Copy SSL keys/certs
 COPY sslcerts/fullchain.pem /etc/letsencrypt/live/hackerlite.xyz/fullchain.pem
@@ -25,3 +26,6 @@ COPY themes/casper/sw.html /home/www-data/hackerlite.xyz/static/html/sw.html
 
 # PWA images
 COPY themes/casper/images/ /home/www-data/hackerlite.xyz/static/images/
+
+# Ads.txt
+COPY ads.txt /home/www-data/hackerlite.xyz/static/text/

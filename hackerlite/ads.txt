@@ -1,0 +1,7 @@
+# ads.txt - Authorised Digital Sellers
+# https://iabtechlab.com/ads-txt/
+#
+# < SSP/Exchange Domain >, < AccountID >, < AccountType >, < TAGID >
+
+google.com, pub-2933692097890394, DIRECT, f08c47fec0942fa0
+google.com, pub-2933692097890394, RESELLER, f08c47fec0942fa0
